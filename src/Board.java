@@ -34,7 +34,7 @@ public class Board {
 		grid = new boolean[width][height];
 		committed = true;
 
-		// YOUR CODE HERE
+		// TODO YOUR CODE HERE
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class Board {
 	 * For an empty board this is 0.
 	 */
 	public int getMaxHeight() {
-		return 0; // YOUR CODE HERE
+		return 0; // TODO YOUR CODE HERE
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class Board {
 	 */
 	public void sanityCheck() {
 		if (DEBUG) {
-			// YOUR CODE HERE
+			// TODO YOUR CODE HERE
 		}
 	}
 
@@ -79,7 +79,7 @@ public class Board {
 	 * to compute this fast -- O(skirt length).
 	 */
 	public int dropHeight(Piece piece, int x) {
-		return 0; // YOUR CODE HERE
+		return 0; // TODO YOUR CODE HERE
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class Board {
 	 * The height is 0 if the column contains no blocks.
 	 */
 	public int getColumnHeight(int x) {
-		return 0; // YOUR CODE HERE
+		return 0; // TODO YOUR CODE HERE
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class Board {
 	 * the given row.
 	 */
 	public int getRowWidth(int y) {
-		return 0; // YOUR CODE HERE
+		return 0; // TODO YOUR CODE HERE
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class Board {
 	 * always return true.
 	 */
 	public boolean getGrid(int x, int y) {
-		return false; // YOUR CODE HERE
+		return false; // TODO YOUR CODE HERE
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class Board {
 
 		int result = PLACE_OK;
 
-		// YOUR CODE HERE
+		// TODO YOUR CODE HERE
 
 		return result;
 	}
@@ -140,7 +140,7 @@ public class Board {
 	 */
 	public int clearRows() {
 		int rowsCleared = 0;
-		// YOUR CODE HERE
+		// TODO YOUR CODE HERE
 		sanityCheck();
 		return rowsCleared;
 	}
@@ -154,7 +154,7 @@ public class Board {
 	 * See the overview docs.
 	 */
 	public void undo() {
-		// YOUR CODE HERE
+		// TODO YOUR CODE HERE
 	}
 
 

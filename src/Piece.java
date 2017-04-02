@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+
 /**
  * An immutable representation of a tetris piece in a particular rotation.
  * Each piece is defined by the blocks that make up its body.
@@ -37,6 +38,7 @@ public class Piece {
 	public static final int S2 = 4;
 	public static final int SQUARE = 5;
 	public static final int PYRAMID = 6;
+	private static final int BIG = 1337;
 	static private Piece[] pieces;    // singleton static array of first rotations
 	// Starter code specs out a few basic things, leaving
 	// the algorithms to be done.
@@ -51,7 +53,12 @@ public class Piece {
 	 * Makes its own copy of the array and the TPoints inside it.
 	 */
 	public Piece(TPoint[] points) {
-		// YOUR CODE HERE
+		body = new TPoint[points.length];
+		for (int i = 0; i < points.length; i++) {
+			body[i] = new TPoint(points[i]);
+		}
+		setMeasurements();
+		setSkirt();
 	}
 
 	/**
@@ -105,7 +112,7 @@ public class Piece {
 	 to the first piece.
 	*/
 	private static Piece makeFastRotations(Piece root) {
-		return null; // YOUR CODE HERE
+		return null; // TODO YOUR CODE HERE
 	}
 
 	/**
@@ -130,6 +137,43 @@ public class Piece {
 		// Make an array out of the collection
 		TPoint[] array = points.toArray(new TPoint[0]);
 		return array;
+	}
+
+	/**
+	 *
+	 */
+	private void setMeasurements() {
+		int width = 0;
+		int height = 0;
+
+		for (TPoint point : body) {
+			if (point.x > width) {
+				width = point.x;
+			}
+
+			if (point.y > height) {
+				height = point.y;
+			}
+		}
+
+		this.width = width + 1;
+		this.height = height + 1;
+	}
+
+	/**
+	 *
+	 */
+	private void setSkirt() {
+		skirt = new int[width];
+		for (int i = 0; i < skirt.length; i++) {
+			skirt[i] = BIG;
+		}
+
+		for (TPoint point : body) {
+			if (point.y < skirt[point.x])
+				skirt[point.x] = point.y;
+		}
+
 	}
 
 	/**
@@ -169,7 +213,14 @@ public class Piece {
 	 * rotated from the receiver.
 	 */
 	public Piece computeNextRotation() {
-		return null; // YOUR CODE HERE
+		TPoint[] points = new TPoint[body.length];
+
+		for (int i = 0; i < body.length; i++) {
+			TPoint point = body[i];
+			points[i] = new TPoint(-point.y + (height - 1), point.x);
+		}
+
+		return new Piece(points);
 	}
 
 	/**
@@ -199,7 +250,7 @@ public class Piece {
 		if (!(obj instanceof Piece)) return false;
 		Piece other = (Piece) obj;
 
-		// YOUR CODE HERE
+		// TODO YOUR CODE HERE
 		return true;
 	}
 
