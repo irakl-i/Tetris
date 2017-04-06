@@ -1,6 +1,7 @@
 // Piece.java
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -112,7 +113,18 @@ public class Piece {
 	 to the first piece.
 	*/
 	private static Piece makeFastRotations(Piece root) {
-		return null; // TODO YOUR CODE HERE
+		Piece current = root;
+		Piece next;
+		while (true) {
+			next = current.computeNextRotation();
+			if (next.equals(root)) {
+				current.next = root;
+				break;
+			}
+			current.next = next;
+			current = next;
+		}
+		return root;
 	}
 
 	/**
@@ -217,7 +229,7 @@ public class Piece {
 
 		for (int i = 0; i < body.length; i++) {
 			TPoint point = body[i];
-			points[i] = new TPoint(-point.y + (height - 1), point.x);
+			points[i] = new TPoint(-point.y + (height - 1), point.x); // (-y + (height offset), x);
 		}
 
 		return new Piece(points);
@@ -250,8 +262,16 @@ public class Piece {
 		if (!(obj instanceof Piece)) return false;
 		Piece other = (Piece) obj;
 
-		// TODO YOUR CODE HERE
-		return true;
+		// Make two lists of Piece points.
+		ArrayList<TPoint> ours = new ArrayList<>(Arrays.asList(this.getBody())); // could have used this.body instead
+		ArrayList<TPoint> theirs = new ArrayList<>(Arrays.asList(other.getBody()));
+
+		// Sort them using lambda functions (finally!).
+		ours.sort((a, b) -> b.compareTo(a));
+		theirs.sort((a, b) -> b.compareTo(a));
+
+		// Compare these two lists
+		return ours.equals(theirs);
 	}
 
 

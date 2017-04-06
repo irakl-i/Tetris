@@ -37,6 +37,15 @@ public class TPoint {
 		return (x == pt.x && y == pt.y);
 	}
 
+	// Used for comparing two TPoints
+	public int compareTo(TPoint that) {
+		if (this.y < that.y) return -1;
+		if (this.y > that.y) return 1;
+		if (this.x < that.x) return -1;
+		if (this.x > that.x) return 1;
+		return 0;
+	}
+
 	// Standard toString() override, produce
 	// human-readable String from object
 	public String toString() {
