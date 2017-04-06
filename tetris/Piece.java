@@ -39,7 +39,6 @@ public class Piece {
 	public static final int S2 = 4;
 	public static final int SQUARE = 5;
 	public static final int PYRAMID = 6;
-	private static final int BIG = 1337;
 	static private Piece[] pieces;    // singleton static array of first rotations
 	// Starter code specs out a few basic things, leaving
 	// the algorithms to be done.
@@ -112,8 +111,9 @@ public class Piece {
 	 to the first piece.
 	*/
 	private static Piece makeFastRotations(Piece root) {
-		Piece current = root;
+		Piece current = root; // No need to change root.
 		Piece next;
+
 		while (true) {
 			next = current.computeNextRotation();
 			if (next.equals(root)) {
@@ -123,6 +123,7 @@ public class Piece {
 			current.next = next;
 			current = next;
 		}
+
 		return root;
 	}
 
@@ -179,12 +180,12 @@ public class Piece {
 	 *
 	 */
 	private void setSkirt() {
-		// Assign '1337' to the each element of the array.
+		// Assign 0x7fffffff to the each element of the array.
 		// Works only because we know that skirt is
-		// much much smaller number in reality.
+		// much much smaller number in practice.
 		skirt = new int[width];
 		for (int i = 0; i < skirt.length; i++) {
-			skirt[i] = BIG;
+			skirt[i] = Integer.MAX_VALUE;
 			// HACK -- Come up with a better solution.
 		}
 

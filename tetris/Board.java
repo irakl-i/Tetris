@@ -13,6 +13,8 @@ public class Board {
 	public static final int PLACE_ROW_FILLED = 1;
 	public static final int PLACE_OUT_BOUNDS = 2;
 	public static final int PLACE_BAD = 3;
+	private static final int DEFAULT_WIDTH = 10;
+	private static final int DEFAULT_HEIGHT = 20;
 	boolean committed;
 
 
@@ -35,6 +37,13 @@ public class Board {
 		committed = true;
 
 		// TODO YOUR CODE HERE
+	}
+
+	/**
+	 * Calls main constructor with default values.
+	 */
+	public Board() {
+		this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
 	/**
