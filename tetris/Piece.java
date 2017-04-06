@@ -96,7 +96,6 @@ public class Piece {
 			};
 		}
 
-
 		return Piece.pieces;
 	}
 
@@ -152,12 +151,14 @@ public class Piece {
 	}
 
 	/**
-	 *
+	 * Calculates width and length of a piece.
 	 */
 	private void setMeasurements() {
 		int width = 0;
 		int height = 0;
 
+		// Find rightmost and topmost
+		// coordinates in pieces body.
 		for (TPoint point : body) {
 			if (point.x > width) {
 				width = point.x;
@@ -168,6 +169,8 @@ public class Piece {
 			}
 		}
 
+		// Assign calculated width/height + 1 to ivars
+		// (+ 1) could be omitted by initializing w/h as 1
 		this.width = width + 1;
 		this.height = height + 1;
 	}
@@ -176,9 +179,13 @@ public class Piece {
 	 *
 	 */
 	private void setSkirt() {
+		// Assign '1337' to the each element of the array.
+		// Works only because we know that skirt is
+		// much much smaller number in reality.
 		skirt = new int[width];
 		for (int i = 0; i < skirt.length; i++) {
 			skirt[i] = BIG;
+			// HACK -- Come up with a better solution.
 		}
 
 		for (TPoint point : body) {
@@ -229,7 +236,7 @@ public class Piece {
 
 		for (int i = 0; i < body.length; i++) {
 			TPoint point = body[i];
-			points[i] = new TPoint(-point.y + (height - 1), point.x); // (-y + (height offset), x);
+			points[i] = new TPoint(-point.y + (height - 1), point.x); // (-y + offset, x);
 		}
 
 		return new Piece(points);
@@ -266,7 +273,7 @@ public class Piece {
 		ArrayList<TPoint> ours = new ArrayList<>(Arrays.asList(this.getBody())); // could have used this.body instead
 		ArrayList<TPoint> theirs = new ArrayList<>(Arrays.asList(other.getBody()));
 
-		// Sort them using lambda functions (finally!).
+		// Sort them using lambda functions (yay!).
 		ours.sort((a, b) -> b.compareTo(a));
 		theirs.sort((a, b) -> b.compareTo(a));
 
