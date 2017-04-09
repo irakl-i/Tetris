@@ -1,4 +1,4 @@
-// Brain.java -- the interface for Tetris brains
+package tetris;// tetris.Brain.java -- the interface for Tetris brains
 
 public interface Brain {
 	/**
@@ -16,7 +16,7 @@ public interface Brain {
 
 	// Move is used as a struct to store a single Move
 	// ("static" here means it does not have a pointer to an
-	// enclosing Brain object, it's just in the Brain namespace.)
+	// enclosing tetris.Brain object, it's just in the tetris.Brain namespace.)
 	class Move {
 		public int x;
 		public int y;

@@ -1,4 +1,4 @@
-// Piece.java
+package tetris;// tetris.Piece.java
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,14 +12,14 @@ import java.util.StringTokenizer;
  * <p>
  * Typical client code looks like...
  * <pre>
- * Piece pyra = new Piece(PYRAMID_STR);		// Create piece from string
+ * tetris.Piece pyra = new tetris.Piece(PYRAMID_STR);		// Create piece from string
  * int width = pyra.getWidth();			// 3
- * Piece pyra2 = pyramid.computeNextRotation(); // get rotation, slow way
+ * tetris.Piece pyra2 = pyramid.computeNextRotation(); // get rotation, slow way
  *
- * Piece[] pieces = Piece.getPieces();	// the array of root pieces
- * Piece stick = pieces[STICK];
+ * tetris.Piece[] pieces = tetris.Piece.getPieces();	// the array of root pieces
+ * tetris.Piece stick = pieces[STICK];
  * int width = stick.getWidth();		// get its width
- * Piece stick2 = stick.fastRotation();	// get the next rotation, fast way
+ * tetris.Piece stick2 = stick.fastRotation();	// get the next rotation, fast way
  * </pre>
  */
 public class Piece {
@@ -49,7 +49,7 @@ public class Piece {
 	private Piece next; // "next" rotation
 
 	/**
-	 * Defines a new piece given a TPoint[] array of its body.
+	 * Defines a new piece given a tetris.TPoint[] array of its body.
 	 * Makes its own copy of the array and the TPoints inside it.
 	 */
 	public Piece(TPoint[] points) {
@@ -107,7 +107,7 @@ public class Piece {
 	 */
 	/*
 	 Implementation: uses computeNextRotation()
-	 and Piece.equals() to detect when the rotations have gotten us back
+	 and tetris.Piece.equals() to detect when the rotations have gotten us back
 	 to the first piece.
 	*/
 	private static Piece makeFastRotations(Piece root) {
@@ -129,7 +129,7 @@ public class Piece {
 
 	/**
 	 * Given a string of x,y pairs ("0 0	0 1 0 2 1 0"), parses
-	 * the points into a TPoint[] array.
+	 * the points into a tetris.TPoint[] array.
 	 * (Provided code)
 	 */
 	private static TPoint[] parsePoints(String string) {
@@ -270,7 +270,7 @@ public class Piece {
 		if (!(obj instanceof Piece)) return false;
 		Piece other = (Piece) obj;
 
-		// Make two lists of Piece points.
+		// Make two lists of tetris.Piece points.
 		ArrayList<TPoint> ours = new ArrayList<>(Arrays.asList(this.getBody())); // could have used this.body instead
 		ArrayList<TPoint> theirs = new ArrayList<>(Arrays.asList(other.getBody()));
 

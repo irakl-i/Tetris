@@ -1,4 +1,5 @@
-//TPoint.java
+//tetris.TPoint.java
+package tetris;
 
 /*
  This is just a trivial "struct" type class --
@@ -11,7 +12,7 @@ public class TPoint {
 	public int x;
 	public int y;
 
-	// Creates a TPoint based in int x,y
+	// Creates a tetris.TPoint based in int x,y
 	public TPoint(int x, int y) {
 		// questionable style but convenient --
 		// params with same name as ivars
@@ -20,7 +21,7 @@ public class TPoint {
 		this.y = y;
 	}
 
-	// Creates a TPoint, copied from an existing TPoint
+	// Creates a tetris.TPoint, copied from an existing tetris.TPoint
 	public TPoint(TPoint point) {
 		this.x = point.x;
 		this.y = point.y;

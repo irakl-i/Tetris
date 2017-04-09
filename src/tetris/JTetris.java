@@ -1,4 +1,4 @@
-// JTetris.java
+package tetris;// tetris.JTetris.java
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -11,9 +11,9 @@ import java.util.Random;
 
 /**
  * CS108 Tetris Game.
- * JTetris presents a tetris game in a window.
+ * tetris.JTetris presents a tetris game in a window.
  * It handles the GUI and the animation.
- * The Piece and Board classes handle the
+ * The tetris.Piece and tetris.Board classes handle the
  * lower-level computations.
  * This code is provided in finished, working form for the students.
  * <p>
@@ -30,8 +30,8 @@ import java.util.Random;
  -tick() moves the current piece
  -a timer object calls tick(DOWN) periodically
  -keystrokes call tick() with LEFT, RIGHT, etc.
- -Board.undo() is used to remove the piece from its
- old position and then Board.place() is used to install
+ -tetris.Board.undo() is used to remove the piece from its
+ old position and then tetris.Board.place() is used to install
  the piece in its new position.
 */
 
@@ -56,7 +56,7 @@ public class JTetris extends JComponent {
 	// Is drawing optimized
 	// (default false, so debugging is easier)
 	protected boolean DRAW_OPTIMIZE = false;
-	// Board data structures
+	// tetris.Board data structures
 	protected Board board;
 	protected Piece[] pieces;
 	// The current piece in play or null
@@ -88,7 +88,7 @@ public class JTetris extends JComponent {
 
 
 	/**
-	 * Creates a new JTetris where each tetris square
+	 * Creates a new tetris.JTetris where each tetris square
 	 * is drawn with the given number of pixels.
 	 */
 	JTetris(int pixels) {
@@ -193,7 +193,7 @@ public class JTetris extends JComponent {
 	}
 
 	/**
-	 * Creates and returns a frame around the given JTetris.
+	 * Creates and returns a frame around the given tetris.JTetris.
 	 * The new frame is not visible.
 	 */
 	public static JFrame createFrame(JTetris tetris) {
@@ -201,7 +201,7 @@ public class JTetris extends JComponent {
 		JComponent container = (JComponent) frame.getContentPane();
 		container.setLayout(new BorderLayout());
 
-		// Install the passed in JTetris in the center.
+		// Install the passed in tetris.JTetris in the center.
 		container.add(tetris, BorderLayout.CENTER);
 
 		// Create and install the panel of controls.
@@ -225,7 +225,7 @@ public class JTetris extends JComponent {
 	}
 
 	/**
-	 * Creates a frame with a JTetris.
+	 * Creates a frame with a tetris.JTetris.
 	 */
 	public static void main(String[] args) {
 		// Set GUI Look And Feel Boilerplate.
@@ -300,7 +300,7 @@ public class JTetris extends JComponent {
 	 * If the placement is not possible, then the placement
 	 * is undone, and the board is not changed. The board
 	 * should be in the committed state when this is called.
-	 * Returns the same error code as Board.place().
+	 * Returns the same error code as tetris.Board.place().
 	 */
 	public int setCurrent(Piece piece, int x, int y) {
 		int result = board.place(piece, x, y);
@@ -649,7 +649,7 @@ public class JTetris extends JComponent {
 
 	/**
 	 * Creates the panel of UI controls -- controls wired
-	 * up to call methods on the JTetris. This code is very repetitive.
+	 * up to call methods on the tetris.JTetris. This code is very repetitive.
 	 */
 	public JComponent createControlPanel() {
 		JPanel panel = new JPanel();

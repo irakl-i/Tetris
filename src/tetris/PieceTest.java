@@ -1,3 +1,5 @@
+package tetris;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -7,12 +9,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /*
-  Unit test for Piece class -- starter shell.
+  Unit test for tetris.Piece class -- starter shell.
  */
 public class PieceTest {
 	// You can create data to be used in the your
 	// test cases like this. For each run of a test method,
-	// a new PieceTest object is created and setUp() is called
+	// a new tetris.PieceTest object is created and setUp() is called
 	// automatically by JUnit.
 	// For example, the code below sets up some
 	// pyramid and s pieces in instance variables

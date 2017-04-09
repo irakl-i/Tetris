@@ -1,7 +1,10 @@
-// Board.java
+package tetris;// tetris.Board.java
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
- * CS108 Tetris Board.
+ * CS108 Tetris tetris.Board.
  * Represents a Tetris board -- essentially a 2-d grid
  * of booleans. Supports tetris pieces and row clearing.
  * Has an "undo" feature that allows clients to add and remove pieces efficiently.
@@ -22,6 +25,8 @@ public class Board {
 	// Some ivars are stubbed out for you:
 	private int width;
 	private int height;
+	private int[] widths;
+	private int[] heights;
 	private boolean[][] grid;
 	private boolean DEBUG = true;
 
@@ -36,6 +41,12 @@ public class Board {
 		grid = new boolean[width][height];
 		committed = true;
 
+		this.widths = new int[height];
+		this.heights = new int[width];
+		computeWidths();
+		computeHeights();
+		System.out.println(getMaxHeight());
+
 		// TODO YOUR CODE HERE
 	}
 
@@ -44,6 +55,30 @@ public class Board {
 	 */
 	public Board() {
 		this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	}
+
+	/**
+	 * Computes heights of each column.
+	 */
+	private void computeHeights() {
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid[0].length; j++) {
+				if (grid[i][j]) heights[i]++;
+			}
+		}
+//		System.out.println(Arrays.toString(heights));
+	}
+
+	/**
+	 * Computes widths of each column.
+	 */
+	private void computeWidths() {
+		for (int i = 0; i < grid[0].length; i++) {
+			for (int j = 0; j < grid.length; j++) {
+				if (grid[j][i]) widths[i]++;
+			}
+		}
+//		System.out.println(Arrays.toString(widths));
 	}
 
 	/**
@@ -65,7 +100,8 @@ public class Board {
 	 * For an empty board this is 0.
 	 */
 	public int getMaxHeight() {
-		return 0; // TODO YOUR CODE HERE
+		// fancy Java 8 way of finding max in the array of primitives.
+		return Arrays.stream(heights).max().getAsInt();
 	}
 
 	/**
@@ -88,7 +124,10 @@ public class Board {
 	 * to compute this fast -- O(skirt length).
 	 */
 	public int dropHeight(Piece piece, int x) {
-		return 0; // TODO YOUR CODE HERE
+		int[] skirt = piece.getSkirt();
+		int difference = 0;
+		// TODO delet this nephew
+		return 0;
 	}
 
 	/**
@@ -97,7 +136,7 @@ public class Board {
 	 * The height is 0 if the column contains no blocks.
 	 */
 	public int getColumnHeight(int x) {
-		return 0; // TODO YOUR CODE HERE
+		return heights[x];
 	}
 
 	/**
@@ -105,7 +144,7 @@ public class Board {
 	 * the given row.
 	 */
 	public int getRowWidth(int y) {
-		return 0; // TODO YOUR CODE HERE
+		return widths[y];
 	}
 
 	/**
@@ -114,7 +153,7 @@ public class Board {
 	 * always return true.
 	 */
 	public boolean getGrid(int x, int y) {
-		return false; // TODO YOUR CODE HERE
+		return !inBounds(new TPoint(x, y)) || grid[x][y];
 	}
 
 	/**
@@ -137,11 +176,61 @@ public class Board {
 
 		int result = PLACE_OK;
 
-		// TODO YOUR CODE HERE
+		TPoint dest = new TPoint(0, 0);
+		for (TPoint point : piece.getBody()) {
+			// Calculate destination coordinates.
+			dest.x = x + point.x;
+			dest.y = x + point.y;
+
+			// Check if the point is in bounds.
+			if (!inBounds(dest)) {
+				result = PLACE_OUT_BOUNDS;
+				break;
+			}
+
+			// Check if the point is not already filled.
+			if (grid[dest.x][dest.y]) {
+				result = PLACE_BAD;
+				break;
+			}
+
+			grid[dest.x][dest.y] = true;
+			widths[dest.x]++;
+			heights[dest.y]++;
+
+			if (isFilled(dest.y)) result = PLACE_ROW_FILLED;
+		}
 
 		return result;
 	}
 
+	/**
+	 * @param y
+	 * @return
+	 */
+	private boolean isFilled(int y) {
+		boolean flag = false;
+
+		for (int i = 0; i < grid.length; i++) {
+			if (!grid[i][y]) {
+				flag = false;
+				break;
+			}
+			flag = true;
+		}
+
+		return flag;
+	}
+
+	/**
+	 * Takes a point and checks if it's on the grid.
+	 *
+	 * @param point on the board
+	 * @return true if the point is in bounds.
+	 */
+	private boolean inBounds(TPoint point) {
+		return (point.x < width) || (point.y < height) || (point.x >= 0) || (point.y >= 0);
+	}
 
 	/**
 	 * Deletes rows that are filled all the way across, moving
@@ -149,9 +238,55 @@ public class Board {
 	 */
 	public int clearRows() {
 		int rowsCleared = 0;
-		// TODO YOUR CODE HERE
+		int column = 0;
+		int size = grid.length * grid[0].length;
+
+		// Make a new grid full of 'false' values.
+		boolean[][] result = new boolean[grid.length][grid[0].length];
+		ArrayList<Boolean> list = new ArrayList<>(); // ArrayList to store already read values of current column.
+
+		for (int i = 0; i <= size; i++) {
+			if (i != 0 && i % grid.length == 0) {
+				boolean flag = isAllTrue(list); // Check if every value of this column is true.
+
+				if (!flag) {
+					// If the flag is false we need to copy
+					// this column to the result grid.
+					for (int j = 0; j < list.size(); j++) {
+						result[j][column] = list.get(j);
+					}
+					column++; // 'Prepare' column for the next iteration.
+				}
+
+				list.clear();
+			}
+
+			if (i < size) list.add(grid[i % grid.length][i / grid.length]); // Add current value to the list.
+		}
+
+		grid = result;
 		sanityCheck();
 		return rowsCleared;
+	}
+
+	/**
+	 * Takes a list and checks if every values is true
+	 *
+	 * @param list of booleans
+	 * @return true if everything's true
+	 */
+	private boolean isAllTrue(ArrayList<Boolean> list) {
+		boolean flag = false;
+
+		for (boolean bool : list) {
+			if (!bool) {
+				flag = false;
+				break;
+			}
+			flag = true;
+		}
+
+		return flag;
 	}
 
 
@@ -179,7 +314,7 @@ public class Board {
 	 Renders the board state as a big String, suitable for printing.
 	 This is the sort of print-obj-state utility that can help see complex
 	 state change over time.
-	 (provided debugging utility) 
+	 (provided debugging utility)
 	 */
 	public String toString() {
 		StringBuilder buff = new StringBuilder();

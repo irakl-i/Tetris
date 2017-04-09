@@ -1,7 +1,7 @@
-// BadBrain.java
+package tetris;// tetris.BadBrain.java
 
 /**
- * A joke implementation based on DefaultBrain --
+ * A joke implementation based on tetris.DefaultBrain --
  * plays very, very badly by recommending the
  * opposite of the real brain.
  */

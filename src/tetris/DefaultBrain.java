@@ -1,8 +1,8 @@
-// DefaultBrain.java
+package tetris;// tetris.DefaultBrain.java
 
 /**
  * Provided code.
- * A simple Brain implementation.
+ * A simple tetris.Brain implementation.
  * bestMove() iterates through all the possible x values
  * and rotations to play a particular piece (there are only
  * around 10-30 ways to play a piece).
@@ -11,14 +11,14 @@
  * good the resulting board is and it just remembers the
  * play with the lowest score. Undo() is used to back-out
  * each play before trying the next. To experiment with writing your own
- * brain -- just subclass off DefaultBrain and override rateBoard().
+ * brain -- just subclass off tetris.DefaultBrain and override rateBoard().
  */
 
 public class DefaultBrain implements Brain {
 	/**
 	 * Given a piece and a board, returns a move object that represents
 	 * the best play for that piece, or returns null if no play is possible.
-	 * See the Brain interface for details.
+	 * See the tetris.Brain interface for details.
 	 */
 	public Brain.Move bestMove(Board board, Piece piece, int limitHeight, Brain.Move move) {
 		// Allocate a move object if necessary
