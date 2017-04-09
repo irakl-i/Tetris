@@ -25,6 +25,7 @@ public class Board {
 	// Some ivars are stubbed out for you:
 	private int width;
 	private int height;
+	private int maxHeight;
 	private int[] widths;
 	private int[] heights;
 	private boolean[][] grid;
@@ -45,10 +46,11 @@ public class Board {
 		this.heights = new int[width];
 		computeWidths();
 		computeHeights();
-		System.out.println(getMaxHeight());
+		maxHeight = getMaxHeight();
 
 		// TODO YOUR CODE HERE
 	}
+
 
 	/**
 	 * Calls main constructor with default values.
@@ -57,17 +59,21 @@ public class Board {
 		this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
+
 	/**
 	 * Computes heights of each column.
 	 */
 	private void computeHeights() {
 		for (int i = 0; i < grid.length; i++) {
+			int top = 0;
 			for (int j = 0; j < grid[0].length; j++) {
-				if (grid[i][j]) heights[i]++;
+				if (grid[i][j] && j >= top) top = j + 1;
 			}
+			heights[i] = top;
 		}
-//		System.out.println(Arrays.toString(heights));
+		System.out.println(Arrays.toString(heights));
 	}
+
 
 	/**
 	 * Computes widths of each column.
@@ -78,8 +84,8 @@ public class Board {
 				if (grid[j][i]) widths[i]++;
 			}
 		}
-//		System.out.println(Arrays.toString(widths));
 	}
+
 
 	/**
 	 * Returns the width of the board in blocks.
@@ -88,6 +94,7 @@ public class Board {
 		return width;
 	}
 
+
 	/**
 	 * Returns the height of the board in blocks.
 	 */
@@ -95,14 +102,16 @@ public class Board {
 		return height;
 	}
 
+
 	/**
 	 * Returns the max column height present in the board.
 	 * For an empty board this is 0.
 	 */
 	public int getMaxHeight() {
 		// fancy Java 8 way of finding max in the array of primitives.
-		return Arrays.stream(heights).max().getAsInt();
+		return maxHeight;
 	}
+
 
 	/**
 	 * Checks the board for internal consistency -- used
@@ -113,6 +122,7 @@ public class Board {
 			// TODO YOUR CODE HERE
 		}
 	}
+
 
 	/**
 	 * Given a piece and an x, returns the y
@@ -125,10 +135,14 @@ public class Board {
 	 */
 	public int dropHeight(Piece piece, int x) {
 		int[] skirt = piece.getSkirt();
-		int difference = 0;
-		// TODO delet this nephew
-		return 0;
+		int result = 0;
+		for (int i = 0; i < piece.getWidth(); i++) {
+			int difference = getColumnHeight(x + i) - skirt[i];
+			if (difference > result) result = difference;
+		}
+		return result;
 	}
+
 
 	/**
 	 * Returns the height of the given column --
@@ -139,6 +153,7 @@ public class Board {
 		return heights[x];
 	}
 
+
 	/**
 	 * Returns the number of filled blocks in
 	 * the given row.
@@ -146,6 +161,7 @@ public class Board {
 	public int getRowWidth(int y) {
 		return widths[y];
 	}
+
 
 	/**
 	 * Returns true if the given block is filled in the board.
@@ -155,6 +171,7 @@ public class Board {
 	public boolean getGrid(int x, int y) {
 		return !inBounds(new TPoint(x, y)) || grid[x][y];
 	}
+
 
 	/**
 	 * Attempts to add the body of a piece to the board.
@@ -180,7 +197,7 @@ public class Board {
 		for (TPoint point : piece.getBody()) {
 			// Calculate destination coordinates.
 			dest.x = x + point.x;
-			dest.y = x + point.y;
+			dest.y = y + point.y;
 
 			// Check if the point is in bounds.
 			if (!inBounds(dest)) {
@@ -195,32 +212,17 @@ public class Board {
 			}
 
 			grid[dest.x][dest.y] = true;
-			widths[dest.x]++;
-			heights[dest.y]++;
+			widths[dest.y]++;
+			heights[dest.x]++;
 
-			if (isFilled(dest.y)) result = PLACE_ROW_FILLED;
+			if (widths[dest.y] == width) result = PLACE_ROW_FILLED;
 		}
 
+		recomputeDimensions();
+		committed = false;
 		return result;
 	}
 
-	/**
-	 * @param y
-	 * @return
-	 */
-	private boolean isFilled(int y) {
-		boolean flag = false;
-
-		for (int i = 0; i < grid.length; i++) {
-			if (!grid[i][y]) {
-				flag = false;
-				break;
-			}
-			flag = true;
-		}
-
-		return flag;
-	}
 
 	/**
 	 * Takes a point and checks if it's on the grid.
@@ -229,8 +231,9 @@ public class Board {
 	 * @return true if the point is in bounds.
 	 */
 	private boolean inBounds(TPoint point) {
-		return (point.x < width) || (point.y < height) || (point.x >= 0) || (point.y >= 0);
+		return (point.x < width) && (point.y < height) && (point.x >= 0) && (point.y >= 0);
 	}
+
 
 	/**
 	 * Deletes rows that are filled all the way across, moving
@@ -243,11 +246,13 @@ public class Board {
 
 		// Make a new grid full of 'false' values.
 		boolean[][] result = new boolean[grid.length][grid[0].length];
-		ArrayList<Boolean> list = new ArrayList<>(); // ArrayList to store already read values of current column.
+		// ArrayList to store already read values of current column.
+		ArrayList<Boolean> list = new ArrayList<>();
 
 		for (int i = 0; i <= size; i++) {
 			if (i != 0 && i % grid.length == 0) {
-				boolean flag = isAllTrue(list); // Check if every value of this column is true.
+				// Check if every value of this column is true.
+				boolean flag = isAllTrue(list);
 
 				if (!flag) {
 					// If the flag is false we need to copy
@@ -256,21 +261,43 @@ public class Board {
 						result[j][column] = list.get(j);
 					}
 					column++; // 'Prepare' column for the next iteration.
+				} else {
+					rowsCleared++;
 				}
 
 				list.clear();
 			}
-
-			if (i < size) list.add(grid[i % grid.length][i / grid.length]); // Add current value to the list.
+			// Add current value to the list.
+			if (i < size) list.add(grid[i % grid.length][i / grid.length]);
 		}
 
 		grid = result;
+		committed = false;
+
+		recomputeDimensions();
 		sanityCheck();
 		return rowsCleared;
 	}
 
+
 	/**
-	 * Takes a list and checks if every values is true
+	 * Nullifies current widths and heights
+	 * arrays and recomputes its values.
+	 */
+	private void recomputeDimensions() {
+		// Fill arrays with zeroes.
+		Arrays.fill(widths, 0);
+		Arrays.fill(heights, 0);
+
+		// Recompute widths and heights.
+		computeWidths();
+		computeHeights();
+		maxHeight = getMaxHeight();
+	}
+
+
+	/**
+	 * Takes a list and checks if every values is true.
 	 *
 	 * @param list of booleans
 	 * @return true if everything's true
@@ -310,11 +337,13 @@ public class Board {
 	}
 
 
-	/*
-	 Renders the board state as a big String, suitable for printing.
-	 This is the sort of print-obj-state utility that can help see complex
-	 state change over time.
-	 (provided debugging utility)
+	/**
+	 * Renders the board state as a big String, suitable for printing.
+	 * This is the sort of print-obj-state utility that can help see complex
+	 * state change over time.
+	 * (provided debugging utility)
+	 *
+	 * @return string
 	 */
 	public String toString() {
 		StringBuilder buff = new StringBuilder();
