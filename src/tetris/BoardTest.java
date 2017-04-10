@@ -217,7 +217,6 @@ public class BoardTest {
 		b1.commit();
 
 		assertEquals(3, b1.clearRows());
-		System.out.println(b1.toString());
 		assertEquals(1, b1.getColumnHeight(0));
 		assertEquals(2, b1.getColumnHeight(1));
 		assertEquals(2, b1.getColumnHeight(2));
@@ -281,9 +280,14 @@ public class BoardTest {
 		assertEquals(Board.PLACE_ROW_FILLED, b1.place(stick2, 0, 0));
 		b1.commit();
 
+		System.out.println(b1.toString());
 		assertEquals(Board.PLACE_OK, b1.place(square, 1, 1));
+		System.out.println(b1.toString());
+
 		assertEquals(3, b1.getMaxHeight());
 		b1.undo();
+		System.out.println(b1.toString());
+
 		assertEquals(1, b1.getMaxHeight());
 		assertEquals(Board.PLACE_OK, b1.place(square, 1, 1));
 		b1.commit();
@@ -340,9 +344,11 @@ public class BoardTest {
 		assertEquals(Board.PLACE_OUT_BOUNDS, b1.place(stick, 0, 0));
 		b1.undo();
 		b1.commit();
+		System.out.println(b1.toString());
 		b1.place(pyr4, 0, 0);
 		assertEquals(1, b1.clearRows());
 		b1.commit();
+		System.out.println(b1.toString());
 		assertEquals(3, b1.getRowWidth(0));
 		assertEquals(2, b1.getMaxHeight());
 		assertEquals(false, b1.getGrid(3, 0));
@@ -361,5 +367,6 @@ public class BoardTest {
 		assertEquals(10, b2.getWidth());
 		assertEquals(10, b2.getHeight());
 	}
+
 }
 

@@ -31,6 +31,11 @@ public class Board {
 	private boolean[][] grid;
 	private boolean DEBUG = true;
 
+	private int maxHeightBackup;
+	private int[] widthsBackup;
+	private int[] heightsBackup;
+	private boolean[][] gridBackup;
+
 
 	/**
 	 * Creates an empty board of the given width and height
@@ -41,14 +46,15 @@ public class Board {
 		this.height = height;
 		grid = new boolean[width][height];
 		committed = true;
-
 		this.widths = new int[height];
 		this.heights = new int[width];
+		this.widthsBackup = new int[height];
+		this.heightsBackup = new int[width];
+		gridBackup = new boolean[width][height];
+
 		computeWidths();
 		computeHeights();
 		maxHeight = getMaxHeight();
-
-		// TODO YOUR CODE HERE
 	}
 
 
@@ -71,7 +77,6 @@ public class Board {
 			}
 			heights[i] = top;
 		}
-		System.out.println(Arrays.toString(heights));
 	}
 
 
@@ -109,7 +114,7 @@ public class Board {
 	 */
 	public int getMaxHeight() {
 		// fancy Java 8 way of finding max in the array of primitives.
-		return maxHeight;
+		return Arrays.stream(heights).max().getAsInt();
 	}
 
 
@@ -190,6 +195,8 @@ public class Board {
 	public int place(Piece piece, int x, int y) {
 		// flag !committed problem
 		if (!committed) throw new RuntimeException("place commit problem");
+		backup();
+		committed = false;
 
 		int result = PLACE_OK;
 
@@ -219,8 +226,21 @@ public class Board {
 		}
 
 		recomputeDimensions();
-		committed = false;
 		return result;
+	}
+
+	private void backup() {
+		// Backup the board.
+		for (int i = 0; i < grid.length; i++) {
+			System.arraycopy(grid[i], 0, gridBackup[i], 0, gridBackup.length);
+		}
+
+		// Backup maxHeight.
+		maxHeightBackup = maxHeight;
+
+		// Backup widths and heights arrays.
+		System.arraycopy(widths, 0, widthsBackup, 0, widths.length);
+		System.arraycopy(heights, 0, heightsBackup, 0, heights.length);
 	}
 
 
@@ -243,6 +263,7 @@ public class Board {
 		int rowsCleared = 0;
 		int column = 0;
 		int size = grid.length * grid[0].length;
+		if (committed) backup();
 
 		// Make a new grid full of 'false' values.
 		boolean[][] result = new boolean[grid.length][grid[0].length];
@@ -271,9 +292,8 @@ public class Board {
 			if (i < size) list.add(grid[i % grid.length][i / grid.length]);
 		}
 
-		grid = result;
 		committed = false;
-
+		grid = result;
 		recomputeDimensions();
 		sanityCheck();
 		return rowsCleared;
@@ -325,7 +345,11 @@ public class Board {
 	 * See the overview docs.
 	 */
 	public void undo() {
-		// TODO YOUR CODE HERE
+		maxHeight = maxHeightBackup;
+		widths = widthsBackup;
+		heights = heightsBackup;
+		grid = gridBackup;
+		commit();
 	}
 
 
