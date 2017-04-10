@@ -19,7 +19,7 @@ public class Board {
 	public static final int PLACE_BAD = 3;
 	private static final int DEFAULT_WIDTH = 10;
 	private static final int DEFAULT_HEIGHT = 20;
-	boolean committed;
+	private boolean committed;
 
 
 	// Here a few trivial methods are provided:
@@ -201,6 +201,16 @@ public class Board {
 		return !inBounds(new TPoint(x, y)) || grid[x][y];
 	}
 
+	/**
+	 * Clears the grid whole grid.
+	 */
+	public void clear() {
+		if (!committed) throw new RuntimeException("clear commit problem");
+		for (boolean[] row : grid)
+			Arrays.fill(row, false);
+		Arrays.fill(widths, 0);
+		Arrays.fill(heights, 0);
+	}
 
 	/**
 	 * Attempts to add the body of a piece to the board.
