@@ -2,6 +2,7 @@ package tetris;// tetris.Board.java
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * CS108 Tetris tetris.Board.
@@ -42,19 +43,23 @@ public class Board {
 	 * measured in blocks.
 	 */
 	public Board(int width, int height) {
+		committed = true;
+
+		// ivars
 		this.width = width;
 		this.height = height;
-		grid = new boolean[width][height];
-		committed = true;
+		this.grid = new boolean[width][height];
 		this.widths = new int[height];
 		this.heights = new int[width];
+
+		// Backups
 		this.widthsBackup = new int[height];
 		this.heightsBackup = new int[width];
-		gridBackup = new boolean[width][height];
+		this.gridBackup = new boolean[width][height];
 
-		computeWidths();
-		computeHeights();
-		maxHeight = getMaxHeight();
+		// Precompute widths and heights.
+		setWidths(widths);
+		setHeights(heights);
 	}
 
 
@@ -69,7 +74,7 @@ public class Board {
 	/**
 	 * Computes heights of each column.
 	 */
-	private void computeHeights() {
+	private void setHeights(int[] heights) {
 		for (int i = 0; i < grid.length; i++) {
 			int top = 0;
 			for (int j = 0; j < grid[0].length; j++) {
@@ -83,7 +88,7 @@ public class Board {
 	/**
 	 * Computes widths of each column.
 	 */
-	private void computeWidths() {
+	private void setWidths(int[] widths) {
 		for (int i = 0; i < grid[0].length; i++) {
 			for (int j = 0; j < grid.length; j++) {
 				if (grid[j][i]) widths[i]++;
@@ -113,8 +118,17 @@ public class Board {
 	 * For an empty board this is 0.
 	 */
 	public int getMaxHeight() {
+		return maxHeight;
+	}
+
+	/**
+	 * Computes max height from the board.
+	 *
+	 * @return max height
+	 */
+	public void setMaxHeight() {
 		// fancy Java 8 way of finding max in the array of primitives.
-		return Arrays.stream(heights).max().getAsInt();
+		maxHeight = Arrays.stream(heights).max().getAsInt();
 	}
 
 
@@ -124,7 +138,17 @@ public class Board {
 	 */
 	public void sanityCheck() {
 		if (DEBUG) {
-			// TODO YOUR CODE HERE
+			int[] widthsDebug = new int[height];
+			setWidths(widthsDebug);
+			if (!Arrays.equals(widths, widthsDebug)) {
+				throw new RuntimeException("Incorrect widths array");
+			}
+
+			int[] heightsDebug = new int[width];
+			setHeights(heightsDebug);
+			if (!Arrays.equals(heights, heights)) {
+				throw new RuntimeException("Incorrect heights array");
+			}
 		}
 	}
 
@@ -225,14 +249,15 @@ public class Board {
 			if (widths[dest.y] == width) result = PLACE_ROW_FILLED;
 		}
 
-		recomputeDimensions();
+		resetDimensions();
+		sanityCheck();
 		return result;
 	}
 
 	private void backup() {
 		// Backup the board.
 		for (int i = 0; i < grid.length; i++) {
-			System.arraycopy(grid[i], 0, gridBackup[i], 0, gridBackup.length);
+			System.arraycopy(grid[i], 0, gridBackup[i], 0, grid[0].length);
 		}
 
 		// Backup maxHeight.
@@ -260,42 +285,37 @@ public class Board {
 	 * things above down. Returns the number of rows cleared.
 	 */
 	public int clearRows() {
-		int rowsCleared = 0;
-		int column = 0;
-		int size = grid.length * grid[0].length;
 		if (committed) backup();
+		int rowsCleared = 0;
 
-		// Make a new grid full of 'false' values.
-		boolean[][] result = new boolean[grid.length][grid[0].length];
-		// ArrayList to store already read values of current column.
-		ArrayList<Boolean> list = new ArrayList<>();
+		int column = 0;
+		int size = width * height;
 
+		boolean[][] result = new boolean[width][height]; // Grid full of 'false' values.
+		List<Boolean> list = new ArrayList<>(); // List to store already read values of current column.
 		for (int i = 0; i <= size; i++) {
-			if (i != 0 && i % grid.length == 0) {
-				// Check if every value of this column is true.
-				boolean flag = isAllTrue(list);
-
+			int x = i % width, y = i / width; // Calculate x and y.
+			if (i != 0 && x == 0) {
+				boolean flag = isAllTrue(list); // Check if every value of this column is true.
 				if (!flag) {
-					// If the flag is false we need to copy
-					// this column to the result grid.
-					for (int j = 0; j < list.size(); j++) {
-						result[j][column] = list.get(j);
+					for (int j = 0; j < list.size(); j++) { // If the flag is false we need to copy
+						result[j][column] = list.get(j);    // this column to the result grid.
 					}
 					column++; // 'Prepare' column for the next iteration.
-				} else {
-					rowsCleared++;
-				}
-
-				list.clear();
+				} else rowsCleared++;
+				list.clear(); // Empty the list.
 			}
-			// Add current value to the list.
-			if (i < size) list.add(grid[i % grid.length][i / grid.length]);
+			if (i < size) list.add(grid[x][y]); // Add current value to the list.
 		}
 
+		// Save the result and board state.
 		committed = false;
 		grid = result;
-		recomputeDimensions();
+
+		// Recompute stuff.
+		resetDimensions();
 		sanityCheck();
+
 		return rowsCleared;
 	}
 
@@ -304,15 +324,15 @@ public class Board {
 	 * Nullifies current widths and heights
 	 * arrays and recomputes its values.
 	 */
-	private void recomputeDimensions() {
+	private void resetDimensions() {
 		// Fill arrays with zeroes.
 		Arrays.fill(widths, 0);
 		Arrays.fill(heights, 0);
 
 		// Recompute widths and heights.
-		computeWidths();
-		computeHeights();
-		maxHeight = getMaxHeight();
+		setWidths(widths);
+		setHeights(heights);
+		setMaxHeight();
 	}
 
 
@@ -322,9 +342,8 @@ public class Board {
 	 * @param list of booleans
 	 * @return true if everything's true
 	 */
-	private boolean isAllTrue(ArrayList<Boolean> list) {
+	private boolean isAllTrue(List<Boolean> list) {
 		boolean flag = false;
-
 		for (boolean bool : list) {
 			if (!bool) {
 				flag = false;
@@ -332,7 +351,6 @@ public class Board {
 			}
 			flag = true;
 		}
-
 		return flag;
 	}
 
@@ -345,11 +363,27 @@ public class Board {
 	 * See the overview docs.
 	 */
 	public void undo() {
+		// Restore maxHeight.
 		maxHeight = maxHeightBackup;
+
+		// Restore widths.
+		int[] tempWidths = widths;
 		widths = widthsBackup;
+		widthsBackup = tempWidths;
+
+		// Restore heights.
+		int[] tempHeights = heights;
 		heights = heightsBackup;
+		heightsBackup = tempHeights;
+
+		// Restore grid.
+		boolean[][] tempGrid = grid;
 		grid = gridBackup;
+		gridBackup = tempGrid;
+
+		// Change board state.
 		commit();
+		sanityCheck();
 	}
 
 
