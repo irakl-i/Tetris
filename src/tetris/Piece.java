@@ -116,6 +116,8 @@ public class Piece {
 
 		while (true) {
 			next = current.computeNextRotation();
+			// If we've come full circle we link the end
+			// to the root and break the loop.
 			if (next.equals(root)) {
 				current.next = root;
 				break;

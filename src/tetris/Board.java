@@ -138,12 +138,15 @@ public class Board {
 	 */
 	public void sanityCheck() {
 		if (DEBUG) {
+			// Recalculate widths array and check if the
+			// main one is the same.
 			int[] widthsDebug = new int[height];
 			setWidths(widthsDebug);
 			if (!Arrays.equals(widths, widthsDebug)) {
 				throw new RuntimeException("Incorrect widths array");
 			}
 
+			// Same thing here.
 			int[] heightsDebug = new int[width];
 			setHeights(heightsDebug);
 			if (!Arrays.equals(heights, heights)) {
@@ -165,6 +168,9 @@ public class Board {
 	public int dropHeight(Piece piece, int x) {
 		int[] skirt = piece.getSkirt();
 		int result = 0;
+		// Compute drop height for every part of the piece
+		// that can potentially touch the board. Return
+		// the smallest difference.
 		for (int i = 0; i < piece.getWidth(); i++) {
 			int difference = getColumnHeight(x + i) - skirt[i];
 			if (difference > result) result = difference;
