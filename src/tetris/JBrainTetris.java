@@ -4,7 +4,16 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by Luka on 4/12/2017.
+ * CS108 Tetris Game.
+ * tetris.JBrainTetris presents a tetris game in a window.
+ * It handles the GUI, the animation and the AI.
+ * The tetris.Piece and tetris.Board classes handle the
+ * lower-level computations.
+ * <p>
+ * Use Keys j-k-l to move, n to drop (or 4-5-6 0)
+ * During animation, filled rows draw as green.
+ * Clearing 1-4 rows scores 5, 10, 20, 40 points.
+ * Clearing 4 rows at a time beeps!
  */
 public class JBrainTetris extends JTetris {
 	// Graphics
@@ -18,6 +27,11 @@ public class JBrainTetris extends JTetris {
 	private Brain.Move move;
 	private int count;
 
+	/**
+	 * Initialize the board and some instance variables.
+	 *
+	 * @param pixels
+	 */
 	public JBrainTetris(int pixels) {
 		super(pixels);
 		brain = new DefaultBrain();
@@ -38,6 +52,10 @@ public class JBrainTetris extends JTetris {
 		frame.setVisible(true);
 	}
 
+	/**
+	 * Randomly selects the worst piece if adversary value is >= 0.
+	 * @return worst piece
+	 */
 	@Override
 	public Piece pickNextPiece() {
 		// Get the slider value.
@@ -72,6 +90,10 @@ public class JBrainTetris extends JTetris {
 		return worstMove.piece;
 	}
 
+	/**
+	 * Uses brain to compute the best possible move for each piece.
+	 * @param verb
+	 */
 	@Override
 	public void tick(int verb) {
 		// Check if the brainMode is active
@@ -112,6 +134,10 @@ public class JBrainTetris extends JTetris {
 		super.tick(verb);
 	}
 
+	/**
+	 * Creates a JTetris control panel with some additions.
+	 * @return panel
+	 */
 	@Override
 	public JComponent createControlPanel() {
 		panel = super.createControlPanel();
