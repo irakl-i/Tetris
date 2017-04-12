@@ -116,6 +116,8 @@ public class Piece {
 
 		while (true) {
 			next = current.computeNextRotation();
+			// If we've come full circle we link the end
+			// to the root and break the loop.
 			if (next.equals(root)) {
 				current.next = root;
 				break;
@@ -186,14 +188,13 @@ public class Piece {
 		skirt = new int[width];
 		for (int i = 0; i < skirt.length; i++) {
 			skirt[i] = Integer.MAX_VALUE;
-			// HACK -- Come up with a better solution.
+			// BAMBOOZLE -- Come up with a better solution.
 		}
 
 		for (TPoint point : body) {
 			if (point.y < skirt[point.x])
 				skirt[point.x] = point.y;
 		}
-
 	}
 
 	/**

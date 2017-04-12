@@ -8,7 +8,7 @@ package tetris;
  We'll allow public access to x/y, so this
  is not an object really.
  */
-public class TPoint {
+public class TPoint implements Comparable<TPoint> {
 	public int x;
 	public int y;
 
@@ -39,6 +39,7 @@ public class TPoint {
 	}
 
 	// Used for comparing two TPoints
+	@Override
 	public int compareTo(TPoint that) {
 		if (this.y < that.y) return -1;
 		if (this.y > that.y) return 1;
