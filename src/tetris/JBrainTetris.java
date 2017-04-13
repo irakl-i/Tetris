@@ -42,6 +42,10 @@ public class JBrainTetris extends JTetris {
 	 * Creates a frame with a tetris.JBrainTetris.
 	 */
 	public static void main(String[] args) {
+		// Set GUI Look And Feel Boilerplate.
+		// Do this incantation at the start of main() to tell Swing
+		// to use the GUI LookAndFeel of the native platform. It's ok
+		// to ignore the exception.
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception ignored) {
@@ -112,7 +116,7 @@ public class JBrainTetris extends JTetris {
 				// Rotate if the best move is to rotate the piece
 				// until we get what we want.
 				if (!currentPiece.equals(move.piece)) {
-					super.tick(ROTATE); // Could have used tick(x) (slower approach, nicer code(?)).
+					super.tick(ROTATE); // Could have used tick(x) (slower approach).
 				}
 
 				// If the move.x value is > than x value of our piece

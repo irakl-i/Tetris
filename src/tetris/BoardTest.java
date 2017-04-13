@@ -83,7 +83,6 @@ public class BoardTest {
 		b.commit();
 		b.place(sRotated, 1, 1);
 		assertEquals(3, b.dropHeight(st1, 2));
-		System.out.println(b.toString());
 	}
 
 	@Test
@@ -103,7 +102,6 @@ public class BoardTest {
 		b.commit();
 		b.place(sRotated, 1, 3);
 		assertEquals(6, b.getMaxHeight());
-		System.out.println(b.toString());
 	}
 
 	@Test
@@ -126,7 +124,6 @@ public class BoardTest {
 		b.place(sq1, 1, 4);
 		assertEquals(6, b.getColumnHeight(1));
 		assertEquals(6, b.getColumnHeight(2));
-		System.out.println(b.toString());
 	}
 
 	@Test
@@ -156,7 +153,6 @@ public class BoardTest {
 		assertEquals(3, b.getRowWidth(1));
 		assertEquals(2, b.getRowWidth(2));
 		assertEquals(1, b.getRowWidth(3));
-		System.out.println(b.toString());
 	}
 
 	@Test
@@ -185,7 +181,6 @@ public class BoardTest {
 		assertEquals(Board.PLACE_ROW_FILLED, b.place(st1, 2, 0));
 		b.commit();
 		assertEquals(2, b.clearRows());
-		System.out.println(b.toString());
 	}
 
 	@Test
@@ -203,7 +198,6 @@ public class BoardTest {
 		b.place(st1, 2, 0);
 		b.undo();
 		assertEquals(0, b.clearRows());
-		System.out.println(b.toString());
 	}
 
 	@Test
@@ -234,12 +228,6 @@ public class BoardTest {
 		for (int i = 0; i < 8; i++) {
 			assertEquals(true, b.getGrid(i, 0));
 		}
-		System.out.println(b.toString());
 	}
-
-
-	// Make  more tests, by putting together longer series of
-	// place, clearRows, undo, place ... checking a few col/row/max
-	// numbers that the board looks right after the operations.
 
 }

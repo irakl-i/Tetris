@@ -57,7 +57,7 @@ public class Board {
 		this.heightsBackup = new int[width];
 		this.gridBackup = new boolean[width][height];
 
-		// Precompute widths and heights.
+		// Pre-compute widths and heights.
 		setWidths(widths);
 		setHeights(heights);
 	}
@@ -138,8 +138,8 @@ public class Board {
 	 */
 	public void sanityCheck() {
 		if (DEBUG) {
-			// Recalculate widths array and check if the
-			// main one is the same.
+			// Recalculate widths array and check the
+			// correctness of the main one.
 			int[] widthsDebug = new int[height];
 			setWidths(widthsDebug);
 			if (!Arrays.equals(widths, widthsDebug)) {
@@ -168,9 +168,9 @@ public class Board {
 	public int dropHeight(Piece piece, int x) {
 		int[] skirt = piece.getSkirt();
 		int result = 0;
-		// Compute drop height for every part of the piece
-		// that can potentially touch the board. Return
-		// the smallest difference.
+		// Compute drop height for every part of the
+		// piece that can potentially touch the board.
+		// Return the smallest difference.
 		for (int i = 0; i < piece.getWidth(); i++) {
 			int difference = getColumnHeight(x + i) - skirt[i];
 			if (difference > result) result = difference;
@@ -258,6 +258,7 @@ public class Board {
 				break;
 			}
 
+			// Do the thing Zhu Li.
 			grid[dest.x][dest.y] = true;
 			widths[dest.y]++;
 			heights[dest.x]++;
@@ -328,7 +329,7 @@ public class Board {
 		committed = false;
 		grid = result;
 
-		// Recompute stuff.
+		// Recompute and check stuff.
 		resetDimensions();
 		sanityCheck();
 
