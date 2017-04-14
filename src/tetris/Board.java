@@ -383,20 +383,15 @@ public class Board {
 		// Restore maxHeight.
 		maxHeight = maxHeightBackup;
 
-		// Restore widths.
-		int[] tempWidths = widths;
-		widths = widthsBackup;
-		widthsBackup = tempWidths;
-
-		// Restore heights.
-		int[] tempHeights = heights;
-		heights = heightsBackup;
-		heightsBackup = tempHeights;
 
 		// Restore grid.
-		boolean[][] tempGrid = grid;
-		grid = gridBackup;
-		gridBackup = tempGrid;
+		for (int i = 0; i < grid.length; i++) {
+			System.arraycopy(gridBackup[i], 0, grid[i], 0, grid[0].length);
+		}
+
+		// Restore widths and heights arrays.
+		System.arraycopy(widthsBackup, 0, widths, 0, widths.length);
+		System.arraycopy(heightsBackup, 0, heights, 0, heights.length);
 
 		// Change board state.
 		commit();

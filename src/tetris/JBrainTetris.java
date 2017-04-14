@@ -79,19 +79,19 @@ public class JBrainTetris extends JTetris {
 		System.out.println("ok");
 
 		Brain.Move worstMove = null;
-		Brain.Move currentMove;
+		Brain.Move currentMove = null;
 		// Iterate over the pieces and choose a piece
 		// with the worst score. We can just save
 		// Brain.Move objects as they also include Piece.
 		for (Piece piece : pieces) {
 			currentMove = brain.bestMove(board, piece, HEIGHT, null);
-			if (worstMove == null || worstMove.score < currentMove.score) {
+			if (currentMove != null && (worstMove == null || worstMove.score < currentMove.score)) {
 				worstMove = currentMove;
 			}
 		}
 
 		// Return piece from the worst move.
-		return worstMove.piece;
+		return (worstMove != null) ? worstMove.piece : super.pickNextPiece();
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class JBrainTetris extends JTetris {
 
 				// If the move.x value is > than x value of our piece
 				// we need to move our piece to the right.
-				else if (move.x > currentX) {
+				if (move.x > currentX) {
 					super.tick(RIGHT);
 				}
 
